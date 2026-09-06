@@ -1357,9 +1357,9 @@ function setTab(t,btn){
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
 function openModal(frota){
-  const m=machines.find(x=>x.frota===frota);
+  const m=machines.find(x=>String(x.frota)===String(frota));
   if(!m) return;
-  modalId=frota; modalStatus=m.status;
+  modalId=String(frota); modalStatus=m.status;
   document.getElementById('m-title').textContent=`Frota ${m.frota}`;
   document.getElementById('m-subtitle').textContent=`${m.modelo} · ${m.categoria}`;
   document.getElementById('m-obs').value=m.obs||'';
@@ -1383,7 +1383,7 @@ function updateModalBtns(){
 
 async function saveModal(){
   if(!modalId||isSaving) return;
-  const m=machines.find(x=>x.frota===modalId);
+  const m=machines.find(x=>String(x.frota)===String(modalId));
   if(!m){showToast('⚠️ Frota não encontrada','tnk');return;}
   const t=ts();
   const newObs=document.getElementById('m-obs').value.trim();
@@ -1394,7 +1394,7 @@ async function saveModal(){
   // Formata data para exibição: dd/mm/yyyy hh:mm
   const dataFmt = newData ? newData.split('-').reverse().join('/') + (newHora ? ' ' + newHora : '') : '';
   history.push({frota:m.frota,modelo:m.modelo,categoria:m.categoria,prevStatus:m.status,newStatus:modalStatus,obs:newObs,resp:newResp,user:currentUser?.username,at:t,dataOcorrencia:dataFmt});
-  const idx=machines.findIndex(x=>x.frota===modalId);
+  const idx=machines.findIndex(x=>String(x.frota)===String(modalId));
   machines[idx]={...m,status:modalStatus,obs:newObs,turno:newTurno||m.turno,resp:newResp,updatedAt:t,dataOcorrencia:newData,horaOcorrencia:newHora,dataOcorrenciaFmt:dataFmt};
   closeModal(); renderAll();
   const c=CLS[modalStatus];
